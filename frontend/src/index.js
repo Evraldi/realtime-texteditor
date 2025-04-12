@@ -15,7 +15,6 @@ import './styles/editor.css';
 import './styles/header.css';
 import './styles/modal.css';
 import './styles/userlist.css';
-import './styles/history.css';
 import './styles/format-toolbar.css';
 import './styles/comments.css';
 import './styles/select-dark.css';

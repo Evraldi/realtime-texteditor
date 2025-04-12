@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { formatDate, getRelativeTimeString } from '../../utils/dateUtils';
 import { getVersions, getVersion, restoreVersion, compareVersions, tagVersion } from '../../services/versionService';
+import './DocumentHistory.css';
 
 /**
  * DocumentHistory component displays the revision history of a document
@@ -235,7 +236,10 @@ const DocumentHistory = ({ isOpen, onClose, documentId, onRestoreVersion }) => {
           {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
           {isLoading ? (
-            <div className="loading-indicator">Loading document history...</div>
+            <div className="loading-indicator">
+              <div className="loading-spinner"></div>
+              <span>Loading document history...</span>
+            </div>
           ) : (
             <div className="history-container">
               <div className="version-list">
@@ -288,12 +292,32 @@ const DocumentHistory = ({ isOpen, onClose, documentId, onRestoreVersion }) => {
                       >
                         <div className="version-header">
                           <span className="version-number">Version {version.versionNumber || version.version}</span>
-                          {version.isCurrent && <span className="current-badge">Current</span>}
-                          {version.isSignificant && <span className="significant-badge">Important</span>}
+                          <div className="version-badges">
+                            {version.isCurrent && <span className="current-badge">Current</span>}
+                            {version.isSignificant && <span className="significant-badge">Important</span>}
+                          </div>
                         </div>
-                        <div className="version-time">{formatDate(version.createdAt)}</div>
-                        <div className="version-author">By {version.createdBy?.email || version.createdBy?.username || 'Unknown'}</div>
+                        <div className="version-meta">
+                          <div className="version-time">{formatDate(version.createdAt)}</div>
+                          <div className="version-author">By {version.createdBy?.username || (version.createdBy?.email && version.createdBy.email.split('@')[0]) || 'Unknown'}</div>
+                        </div>
                         <div className="version-description">{version.description || 'No description'}</div>
+
+                        {/* Show change statistics if available */}
+                        {version.changes && (
+                          <div className="version-changes-stats">
+                            {version.changes.addedChars > 0 && (
+                              <span className="change-stat added">+{version.changes.addedChars}</span>
+                            )}
+                            {version.changes.removedChars > 0 && (
+                              <span className="change-stat removed">-{version.changes.removedChars}</span>
+                            )}
+                            {version.changes.changedLines > 0 && (
+                              <span className="change-stat modified">{version.changes.changedLines} lines</span>
+                            )}
+                          </div>
+                        )}
+
                         {version.tags && version.tags.length > 0 && (
                           <div className="version-tags">
                             {version.tags.map(tag => (
@@ -379,7 +403,9 @@ const DocumentHistory = ({ isOpen, onClose, documentId, onRestoreVersion }) => {
                           <strong>Version {comparisonResult.version1.versionNumber}</strong>
                           <span className="comparison-date">{formatDate(comparisonResult.version1.createdAt)}</span>
                         </div>
-                        <div className="comparison-vs">vs</div>
+                        <div className="comparison-vs">
+                          <span className="vs-icon">⟷</span>
+                        </div>
                         <div className="comparison-version">
                           <strong>Version {comparisonResult.version2.versionNumber}</strong>
                           <span className="comparison-date">{formatDate(comparisonResult.version2.createdAt)}</span>
@@ -393,30 +419,41 @@ const DocumentHistory = ({ isOpen, onClose, documentId, onRestoreVersion }) => {
 
                       <div className="comparison-stats">
                         <h5>Change Statistics</h5>
+                        <div className="comparison-progress">
+                          <div className="progress-bar">
+                            <div
+                              className="progress-fill"
+                              style={{ width: `${Math.min(100, comparisonResult.comparison.changePercentage)}%` }}
+                            ></div>
+                          </div>
+                          <div className="progress-label">{comparisonResult.comparison.changePercentage}% changed</div>
+                        </div>
                         <div className="stats-grid">
                           <div className="stat-item">
                             <span className="stat-label">Lines Added:</span>
-                            <span className="stat-value">{comparisonResult.comparison.addedLines}</span>
+                            <span className="stat-value added">{comparisonResult.comparison.addedLines}</span>
                           </div>
                           <div className="stat-item">
                             <span className="stat-label">Lines Removed:</span>
-                            <span className="stat-value">{comparisonResult.comparison.removedLines}</span>
+                            <span className="stat-value removed">{comparisonResult.comparison.removedLines}</span>
                           </div>
                           <div className="stat-item">
                             <span className="stat-label">Lines Modified:</span>
-                            <span className="stat-value">{comparisonResult.comparison.modifiedLines}</span>
+                            <span className="stat-value modified">{comparisonResult.comparison.modifiedLines}</span>
                           </div>
                           <div className="stat-item">
                             <span className="stat-label">Words Added:</span>
-                            <span className="stat-value">{comparisonResult.comparison.addedWords}</span>
+                            <span className="stat-value added">{comparisonResult.comparison.addedWords}</span>
                           </div>
                           <div className="stat-item">
                             <span className="stat-label">Words Removed:</span>
-                            <span className="stat-value">{comparisonResult.comparison.removedWords}</span>
+                            <span className="stat-value removed">{comparisonResult.comparison.removedWords}</span>
                           </div>
                           <div className="stat-item">
-                            <span className="stat-label">Change Percentage:</span>
-                            <span className="stat-value">{comparisonResult.comparison.changePercentage}%</span>
+                            <span className="stat-label">Characters Changed:</span>
+                            <span className="stat-value">
+                              +{comparisonResult.comparison.addedChars || 0} / -{comparisonResult.comparison.removedChars || 0}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -437,61 +474,105 @@ const DocumentHistory = ({ isOpen, onClose, documentId, onRestoreVersion }) => {
                   ) : (
                     /* Normal version details UI */
                     <>
-                      <h4>Version Details</h4>
-                      <div className="version-info">
-                        <div className="info-row">
-                          <span className="info-label">Version:</span>
-                          <span className="info-value">{selectedVersion.versionNumber || selectedVersion.version}</span>
+                      <div className="version-details-header">
+                        <h4>Version {selectedVersion.versionNumber || selectedVersion.version} Details</h4>
+                        {selectedVersion.isSignificant && (
+                          <span className="significant-badge-large">Important Version</span>
+                        )}
+                      </div>
+
+                      <div className="version-meta-card">
+                        <div className="version-meta-header">
+                          <div className="version-meta-title">
+                            <span className="version-date">{formatDate(selectedVersion.createdAt)}</span>
+                            <span className="version-age">{getRelativeTimeString(selectedVersion.createdAt)}</span>
+                          </div>
+                          <div className="version-meta-author">
+                            <span className="author-label">By</span>
+                            <span className="author-name">
+                              {selectedVersion.createdBy?.username ||
+                               (selectedVersion.createdBy?.email && selectedVersion.createdBy.email.split('@')[0]) ||
+                               'Unknown'}
+                            </span>
+                          </div>
                         </div>
-                        <div className="info-row">
-                          <span className="info-label">Created:</span>
-                          <span className="info-value">{formatDate(selectedVersion.createdAt)}</span>
-                        </div>
-                        <div className="info-row">
-                          <span className="info-label">Author:</span>
-                          <span className="info-value">
-                            {selectedVersion.createdBy?.email ||
-                             selectedVersion.createdBy?.username ||
-                             'Unknown'}
-                          </span>
-                        </div>
+
                         {selectedVersion.description && (
-                          <div className="info-row">
-                            <span className="info-label">Description:</span>
-                            <span className="info-value">{selectedVersion.description}</span>
+                          <div className="version-description-card">
+                            <p>{selectedVersion.description}</p>
                           </div>
                         )}
-                        {selectedVersion.changes && typeof selectedVersion.changes === 'string' && (
-                          <div className="info-row">
-                            <span className="info-label">Changes:</span>
-                            <span className="info-value">{selectedVersion.changes}</span>
-                          </div>
-                        )}
+                      </div>
+
+                      <div className="version-info">
+                        <h5>Version Information</h5>
+
+                        {/* Changes section with visual indicators */}
                         {selectedVersion.changes && typeof selectedVersion.changes === 'object' && (
-                          <div className="info-row">
-                            <span className="info-label">Changes:</span>
-                            <span className="info-value">
-                              {selectedVersion.changes.addedChars > 0 &&
-                                `+${selectedVersion.changes.addedChars} chars`}
-                              {selectedVersion.changes.removedChars > 0 &&
-                                ` -${selectedVersion.changes.removedChars} chars`}
-                              {selectedVersion.changes.changedLines > 0 &&
-                                ` ${selectedVersion.changes.changedLines} lines changed`}
-                            </span>
+                          <div className="version-changes-card">
+                            <h6>Changes</h6>
+                            <div className="changes-stats">
+                              {selectedVersion.changes.addedChars > 0 && (
+                                <div className="change-stat-item">
+                                  <span className="change-icon added">+</span>
+                                  <span className="change-value">{selectedVersion.changes.addedChars} characters added</span>
+                                </div>
+                              )}
+                              {selectedVersion.changes.removedChars > 0 && (
+                                <div className="change-stat-item">
+                                  <span className="change-icon removed">-</span>
+                                  <span className="change-value">{selectedVersion.changes.removedChars} characters removed</span>
+                                </div>
+                              )}
+                              {selectedVersion.changes.changedLines > 0 && (
+                                <div className="change-stat-item">
+                                  <span className="change-icon modified">≈</span>
+                                  <span className="change-value">{selectedVersion.changes.changedLines} lines modified</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {selectedVersion.metadata && selectedVersion.metadata.changePercentage !== undefined && (
+                              <div className="change-percentage">
+                                <div className="progress-bar">
+                                  <div
+                                    className="progress-fill"
+                                    style={{ width: `${Math.min(100, selectedVersion.metadata.changePercentage)}%` }}
+                                  ></div>
+                                </div>
+                                <div className="progress-label">{selectedVersion.metadata.changePercentage}% changed from previous version</div>
+                              </div>
+                            )}
                           </div>
                         )}
-                        <div className="info-row">
-                          <span className="info-label">Age:</span>
-                          <span className="info-value">{getRelativeTimeString(selectedVersion.createdAt)}</span>
-                        </div>
+
+                        {/* Metadata section */}
                         {selectedVersion.metadata && (
-                          <div className="info-row">
-                            <span className="info-label">Metadata:</span>
-                            <span className="info-value">
-                              {selectedVersion.metadata.isRestoration && 'Restoration'}
-                              {selectedVersion.metadata.changePercentage !== undefined &&
-                                ` (${selectedVersion.metadata.changePercentage}% changed)`}
-                            </span>
+                          <div className="version-metadata">
+                            <h6>Additional Information</h6>
+                            <ul className="metadata-list">
+                              {selectedVersion.metadata.isRestoration && (
+                                <li className="metadata-item restoration">
+                                  <span className="metadata-icon">↩</span>
+                                  <span>Restoration from previous version</span>
+                                </li>
+                              )}
+                              {selectedVersion.metadata.restoredFromVersion && (
+                                <li className="metadata-item">
+                                  <span>Restored from Version {selectedVersion.metadata.restoredFromVersion}</span>
+                                </li>
+                              )}
+                              {selectedVersion.metadata.contentLength && (
+                                <li className="metadata-item">
+                                  <span>Document size: {selectedVersion.metadata.contentLength} characters</span>
+                                </li>
+                              )}
+                              {selectedVersion.metadata.lineCount && (
+                                <li className="metadata-item">
+                                  <span>Line count: {selectedVersion.metadata.lineCount} lines</span>
+                                </li>
+                              )}
+                            </ul>
                           </div>
                         )}
                       </div>
@@ -499,10 +580,24 @@ const DocumentHistory = ({ isOpen, onClose, documentId, onRestoreVersion }) => {
                       {versionContent && (
                         <div className="version-content-preview">
                           <h5>Content Preview</h5>
-                          <div className="content-preview">
-                            {versionContent.length > 500
-                              ? versionContent.substring(0, 500) + '...'
-                              : versionContent}
+                          <div className="content-preview-container">
+                            <div className="content-preview">
+                              <div dangerouslySetInnerHTML={{
+                                __html: versionContent.length > 500
+                                  ? versionContent.substring(0, 500) + '...'
+                                  : versionContent
+                              }} />
+                            </div>
+                            <div className="content-preview-info">
+                              <div className="content-length">
+                                <span className="content-length-label">Length:</span>
+                                <span className="content-length-value">{versionContent.length} characters</span>
+                              </div>
+                              <div className="content-lines">
+                                <span className="content-lines-label">Lines:</span>
+                                <span className="content-lines-value">{versionContent.split('\n').length}</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       )}
