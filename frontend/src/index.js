@@ -18,6 +18,7 @@ import './styles/userlist.css';
 import './styles/history.css';
 import './styles/format-toolbar.css';
 import './styles/comments.css';
+import './styles/select-dark.css';
 import './components/Editor/TextEditor.css';
 
 ReactDOM.render(

@@ -1,0 +1,763 @@
+/* Document card styles */
+
+/**
+ * Document Card Component
+ *
+ * A card component that displays document information with a clean, modern design
+ * following enterprise-level UI/UX best practices.
+ *
+ * 1. Uses subtle shadows and border effects for depth
+ * 2. Implements smooth transitions for interactive states
+ * 3. Follows 8-point grid system for consistent spacing
+ * 4. Uses CUBE CSS methodology for component architecture
+ */
+
+.document-card {
+  /* Base structure */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+
+  /* Visual styling */
+  background-color: var(--pro-bg-card);
+  border-radius: 16px; /* Slightly larger radius for modern look */
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+
+  /* Elevation and depth */
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.12);
+
+  /* Transitions */
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), /* Custom easing for natural movement */
+    box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    background-color 0.2s ease;
+}
+
+/* Top highlight effect */
+.document-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.1) 80%,
+    transparent);
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Hover state */
+.document-card:hover {
+  transform: translateY(-6px); /* Slightly reduced for subtlety */
+  background-color: var(--pro-bg-card-hover);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.12),
+    0 4px 8px rgba(0, 0, 0, 0.16);
+}
+
+.document-card:hover::before {
+  opacity: 1;
+}
+
+/* Focus state for accessibility */
+.document-card:focus-within {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--pro-primary),
+    0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/**
+ * Document Card Header
+ *
+ * The header section of the document card with gradient background
+ * and sophisticated visual effects.
+ */
+.document-card-header {
+  padding: 1.25rem; /* Adjusted padding for better spacing */
+  background: var(--pro-gradient-primary);
+  position: relative;
+  overflow: visible; /* Changed from hidden to allow edit UI to overflow */
+  color: var(--color-white);
+
+  /* Subtle inner shadow for depth */
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+
+  /* Ensure proper z-index for edit mode */
+  z-index: 2;
+}
+
+/* Special styling for header when in edit mode */
+.document-card-header.editing {
+  padding: 1rem 0.75rem; /* Adjusted padding when in edit mode */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add a class for the edit mode label */
+.edit-title-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the text */
+  white-space: nowrap;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  width: 100%;
+  text-align: center; /* Ensure text is centered */
+}
+
+/* Decorative light effect */
+.document-card-header::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -15%;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.25) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  opacity: 0.6;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  filter: blur(4px); /* Soft blur for more realistic light effect */
+}
+
+/* Enhanced light effect on hover */
+.document-card:hover .document-card-header::before {
+  transform: scale(1.2) translateX(-10%);
+  opacity: 0.8;
+  filter: blur(2px); /* Sharper on hover */
+}
+
+/**
+ * Document Card Title
+ *
+ * Typography follows professional design standards with proper
+ * hierarchy, readability, and truncation for long titles.
+ */
+.document-card-title {
+  font-size: 1.25rem; /* Slightly larger for better readability */
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em; /* Refined letter spacing */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  font-family: var(--pro-font-sans); /* Ensure consistent font */
+  line-height: 1.3; /* Improved line height for readability */
+
+  /* Prevent selection for better UX */
+  user-select: none;
+}
+
+/**
+ * Document Title Display and Edit
+ *
+ * Implements a clean, accessible interface for displaying and editing document titles
+ * with proper spacing, alignment, and interactive states.
+ */
+.document-title-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Icon button styling with accessibility considerations */
+.document-title-display .btn-icon {
+  /* Visual styling */
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 8px;
+
+  /* Sizing and layout */
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-left: 0.75rem;
+  flex-shrink: 0;
+
+  /* Alignment */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Interaction */
+  cursor: pointer;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+
+  /* Accessibility */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover state with subtle elevation */
+.document-title-display .btn-icon:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Active/pressed state */
+.document-title-display .btn-icon:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Focus state for keyboard navigation */
+.document-title-display .btn-icon:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px var(--pro-primary);
+}
+
+/* Small icon button variant */
+.btn-sm.btn-icon {
+  /* Visual styling */
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 8px;
+
+  /* Sizing and layout */
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-left: 0.75rem;
+  flex-shrink: 0;
+
+  /* Alignment */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Interaction */
+  cursor: pointer;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+}
+
+.btn-sm.btn-icon:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-sm.btn-icon:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.btn-sm.btn-icon:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px var(--pro-primary);
+}
+
+/**
+ * Title Edit Mode
+ *
+ * Enhanced, accessible interface for editing document titles with
+ * professional styling and clear visual hierarchy.
+ */
+.document-title-edit {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Center all elements */
+  align-items: center;
+  width: 100%;
+  position: relative;
+  z-index: 10; /* Ensure it appears above other elements */
+
+  /* Add subtle animation for appearance */
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0.7; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Input field with professional styling */
+.title-input {
+  width: 70%; /* Fixed width instead of flex */
+  height: 40px;
+  padding: 0 0.75rem; /* Simplified padding */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: var(--pro-font-sans);
+  line-height: 40px; /* Match height for vertical centering */
+  text-align: center; /* Center the text */
+
+  /* Visual styling */
+  background-color: white;
+  color: var(--pro-bg-dark);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  /* Prevent text from being cut off */
+  min-width: 0;
+  margin-bottom: 0.5rem;
+
+  /* Ensure proper text contrast */
+  caret-color: var(--pro-primary);
+}
+
+/* Focus state with clear visual indication */
+.title-input:focus {
+  outline: none;
+  border-color: var(--pro-primary);
+  background-color: white;
+  box-shadow: 0 0 0 2px rgba(94, 114, 228, 0.2);
+}
+
+/* Placeholder styling */
+.title-input::placeholder {
+  color: #aaa;
+  opacity: 0.7;
+}
+
+/* Action buttons container */
+.title-edit-actions {
+  display: flex;
+  gap: 0.75rem; /* Increased for better spacing */
+  position: relative; /* For proper stacking context */
+  flex-shrink: 0;
+  margin-bottom: 0.5rem;
+  margin-left: 0; /* Remove left margin to center properly */
+}
+
+/* Style the action buttons */
+.title-edit-actions .btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  padding: 0;
+}
+
+/* Success button styling */
+.title-edit-actions .btn-success {
+  background: var(--pro-success);
+  color: white;
+  font-size: 1.125rem;
+}
+
+.title-edit-actions .btn-success:hover {
+  background: #25b67a; /* Slightly darker shade */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.title-edit-actions .btn-success:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* Secondary button styling */
+.title-edit-actions .btn-secondary {
+  background: #f8f9fa;
+  color: #495057;
+  font-size: 1.125rem;
+}
+
+.title-edit-actions .btn-secondary:hover {
+  background: #e9ecef;
+  color: #212529;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.title-edit-actions .btn-secondary:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* Disabled state */
+.title-edit-actions .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* SVG icons in buttons */
+.title-edit-actions .btn svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
+}
+
+/**
+ * Document Card Content
+ *
+ * The main content area of the document card that displays
+ * a preview of the document text with proper typography and spacing.
+ */
+.document-card-content {
+  /* Layout */
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+
+  /* Visual styling */
+  background-color: var(--pro-bg-card);
+
+  /* Subtle texture for depth */
+  background-image:
+    linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.02) 0%,
+      rgba(255, 255, 255, 0) 100%);
+}
+
+/* Subtle separator line */
+.document-card-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  z-index: 0;
+}
+
+/**
+ * Document Preview Text
+ *
+ * Displays a truncated preview of the document content
+ * with proper typography for optimal readability.
+ */
+.document-card-preview {
+  /* Typography */
+  font-size: 0.9375rem; /* Slightly larger for better readability */
+  color: var(--pro-text-secondary);
+  line-height: 1.6;
+  font-family: var(--pro-font-sans);
+  letter-spacing: 0.01em;
+
+  /* Layout */
+  margin-bottom: 1.25rem;
+  flex: 1;
+  position: relative;
+
+  /* Text truncation */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+
+  /* Subtle text fade effect at bottom */
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+/**
+ * Document Card Footer
+ *
+ * The footer section of the document card that displays metadata
+ * and action buttons with proper alignment and spacing.
+ */
+.document-card-footer {
+  /* Layout */
+  padding: 1.125rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+
+  /* Visual styling */
+  background: rgba(0, 0, 0, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+
+  /* Subtle glass effect */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Gradient separator line */
+.document-card-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.05) 80%,
+    transparent);
+  opacity: 0.8;
+}
+
+/**
+ * Document Date Display
+ *
+ * Displays the last modified date with proper typography
+ * and icon alignment for better readability.
+ */
+.document-card-date {
+  /* Typography */
+  font-size: 0.8125rem;
+  color: var(--pro-text-muted);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+
+  /* Layout */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+
+  /* Prevent selection for better UX */
+  user-select: none;
+}
+
+/**
+ * Create Document Card
+ *
+ * A special card component that invites users to create a new document
+ * with engaging visual effects and clear call-to-action.
+ */
+.create-document-card {
+  /* Base structure */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 1.75rem;
+  text-align: center;
+
+  /* Visual styling */
+  background: linear-gradient(135deg,
+    rgba(94, 114, 228, 0.04) 0%,
+    rgba(130, 94, 228, 0.04) 100%);
+  border: 2px dashed rgba(94, 114, 228, 0.18);
+  border-radius: 16px;
+
+  /* Interaction */
+  cursor: pointer;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* Background glow effect */
+.create-document-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(94, 114, 228, 0.06) 0%,
+    transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  filter: blur(20px);
+}
+
+/* Hover state */
+.create-document-card:hover {
+  background: linear-gradient(135deg,
+    rgba(94, 114, 228, 0.06) 0%,
+    rgba(130, 94, 228, 0.06) 100%);
+  border-color: rgba(94, 114, 228, 0.35);
+  transform: translateY(-6px);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.12),
+    0 4px 8px rgba(0, 0, 0, 0.16);
+}
+
+.create-document-card:hover::before {
+  opacity: 1;
+}
+
+/* Focus state for accessibility */
+.create-document-card:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--pro-primary),
+    0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/**
+ * Create Document Icon
+ *
+ * The circular icon with plus sign that serves as the primary
+ * visual element in the create document card.
+ */
+.create-document-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(94, 114, 228, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+  position: relative;
+  box-shadow:
+    0 4px 16px rgba(94, 114, 228, 0.15),
+    0 1px 3px rgba(94, 114, 228, 0.1);
+  color: var(--pro-primary);
+  font-size: 2rem;
+  transition:
+    background 0.3s ease,
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Icon SVG styling */
+.create-document-icon svg {
+  width: 32px;
+  height: 32px;
+  color: var(--pro-primary);
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.3s ease;
+}
+
+/* Icon animation on hover */
+.create-document-card:hover .create-document-icon svg {
+  color: white;
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* Pulsing border effect */
+.create-document-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(94, 114, 228, 0.25);
+  animation: pulse 2.5s infinite cubic-bezier(0.66, 0, 0.34, 1);
+}
+
+/* Refined pulse animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* Icon background change on hover */
+.create-document-card:hover .create-document-icon {
+  background: var(--pro-gradient-primary);
+  transform: scale(1.1);
+  color: white;
+  box-shadow:
+    0 8px 24px rgba(94, 114, 228, 0.25),
+    0 2px 6px rgba(94, 114, 228, 0.15);
+}
+
+/**
+ * Create Document Text
+ *
+ * The title text with gradient effect that clearly communicates
+ * the purpose of the card.
+ */
+.create-document-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.875rem;
+  background: var(--pro-gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  transition: transform 0.3s ease;
+
+  /* Prevent selection for better UX */
+  user-select: none;
+}
+
+.create-document-card:hover .create-document-text {
+  transform: scale(1.05);
+}
+
+/**
+ * Create Document Description
+ *
+ * The secondary text that provides additional context
+ * about creating a new document.
+ */
+.create-document-description {
+  font-size: 0.9375rem;
+  color: var(--pro-text-secondary);
+  max-width: 240px;
+  line-height: 1.6;
+  transition: opacity 0.3s ease;
+
+  /* Prevent selection for better UX */
+  user-select: none;
+}

@@ -1,11 +1,12 @@
 /* Header styles */
 .header {
-  background-color: var(--color-white);
-  box-shadow: var(--shadow-md);
+  background-color: var(--pro-bg-card);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: var(--spacing-3) var(--spacing-4);
   position: sticky;
   top: 0;
   z-index: var(--z-index-30);
+  border-bottom: 1px solid var(--pro-border);
 }
 
 .header-container {
@@ -25,8 +26,13 @@
 .header-logo h1 {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
+  background: var(--pro-gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .header-logo img {
@@ -165,7 +171,7 @@
   .header-mobile-toggle {
     display: block;
   }
-  
+
   .header-nav {
     display: none;
     position: absolute;
@@ -178,11 +184,11 @@
     padding: var(--spacing-3);
     box-shadow: var(--shadow-md);
   }
-  
+
   .header-nav.open {
     display: flex;
   }
-  
+
   .header-auth {
     margin-top: var(--spacing-3);
   }

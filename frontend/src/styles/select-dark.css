@@ -1,0 +1,62 @@
+/**
+ * Custom styling for dark mode select dropdowns
+ * This file contains browser-specific fixes to ensure consistent dark theme appearance
+ */
+
+/* Target Chrome, Safari, Edge, and Opera */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  select {
+    background-color: var(--pro-bg-card);
+    color: var(--pro-text-primary);
+  }
+  
+  select option {
+    background-color: var(--pro-bg-card);
+    color: var(--pro-text-primary);
+  }
+}
+
+/* Target Firefox */
+@-moz-document url-prefix() {
+  select {
+    background-color: var(--pro-bg-card);
+    color: var(--pro-text-primary);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  select option {
+    background-color: var(--pro-bg-card);
+    color: var(--pro-text-primary);
+    padding: 8px;
+  }
+}
+
+/* General styling for all browsers */
+select {
+  color-scheme: dark; /* Tell browser to use dark mode UI */
+}
+
+select option {
+  background-color: var(--pro-bg-card);
+  color: var(--pro-text-primary);
+}
+
+/* Ensure dropdown menu has dark background */
+select optgroup {
+  background-color: var(--pro-bg-card);
+  color: var(--pro-text-primary);
+  font-weight: 600;
+}
+
+/* Style for selected option */
+select option:checked {
+  background-color: var(--pro-primary);
+  color: white;
+  box-shadow: 0 0 10px 100px var(--pro-primary) inset;
+}
+
+/* Style for hover state */
+select option:hover {
+  background-color: var(--pro-primary-hover);
+  color: white;
+}

@@ -1,12 +1,12 @@
 /* Import design system variables */
 @import './variables.css';
 @import './auth.css';
-@import './document.css';
 @import './header.css';
 @import './components.css';
 @import './editor.css';
 @import './modal.css';
 @import './history.css';
+@import './document.css';
 
 /* Reset and base styles */
 * {
@@ -24,8 +24,8 @@ body {
   font-family: var(--font-family-base);
   font-size: var(--font-size-md);
   line-height: var(--line-height-normal);
-  color: var(--color-gray-800);
-  background-color: var(--color-gray-100);
+  color: var(--pro-text-primary);
+  background-color: var(--pro-bg-dark);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

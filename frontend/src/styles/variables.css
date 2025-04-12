@@ -1,4 +1,30 @@
 :root {
+  /* Professional UI theme colors */
+  --pro-bg-dark: #1e1f26;
+  --pro-bg-card: #282a36;
+  --pro-bg-card-hover: #2f3241;
+  --pro-primary: #5e72e4;
+  --pro-primary-hover: #4a5cd0;
+  --pro-secondary: #8392ab;
+  --pro-accent: #11cdef;
+  --pro-danger: #f5365c;
+  --pro-danger-hover: #ec0c38;
+  --pro-success: #2dce89;
+  --pro-warning: #fb6340;
+  --pro-text-primary: #ffffff;
+  --pro-text-secondary: #8392ab;
+  --pro-text-muted: #636b83;
+  --pro-border: rgba(255, 255, 255, 0.1);
+  --pro-shadow-sm: 0 2px 5px 0 rgba(0, 0, 0, 0.05);
+  --pro-shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+  --pro-shadow-lg: 0 12px 28px 0 rgba(0, 0, 0, 0.2);
+  --pro-gradient-primary: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+  --pro-gradient-secondary: linear-gradient(87deg, #f5365c 0, #f56036 100%);
+
+  /* Professional UI typography */
+  --pro-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --pro-font-mono: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+
   /* Color palette */
   --color-primary: #4a6fa5;
   --color-primary-light: #6989b9;

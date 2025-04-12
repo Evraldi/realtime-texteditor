@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 /**
  * Error message component
@@ -15,9 +16,27 @@ const ErrorMessage = ({ message, type = 'error', onDismiss }) => {
   // CSS classes based on type
   const alertClass = `alert alert-${type}`;
 
+  // Check if this is a session expiration message
+  const isSessionExpired = message && (
+    message.includes('session expired') ||
+    message.includes('Session expired') ||
+    message.toLowerCase().includes('log in again')
+  );
+
   return (
     <div className={alertClass} role="alert" data-testid="error-message">
-      <p className="alert-message">{message}</p>
+      <div className="alert-content">
+        <p className="alert-message">{message}</p>
+
+        {isSessionExpired && (
+          <div className="alert-actions">
+            <Link to="/login" className="btn btn-sm btn-primary">
+              Login Again
+            </Link>
+          </div>
+        )}
+      </div>
+
       {onDismiss && (
         <button
           type="button"
