@@ -8,6 +8,8 @@ import {
   refreshToken
 } from '../services/authService';
 import { loginSuccess, loginFailure, logout as logoutAction } from '../store/slices/authSlice';
+import { STORAGE_KEYS } from '../config/constants';
+import { setAuthToken } from '../utils/axiosConfig';
 
 // Create context with default values
 export const AuthContext = createContext({
@@ -49,8 +51,11 @@ export const AuthProvider = ({ children }) => {
             setUser(userData);
 
             // Get token from storage
-            const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') ||
-                         localStorage.getItem('token') || sessionStorage.getItem('token');
+            const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) ||
+                         sessionStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+
+            // Set token in axios
+            setAuthToken(token);
 
             // Update Redux store
             dispatch(loginSuccess({
@@ -97,10 +102,16 @@ export const AuthProvider = ({ children }) => {
       if (data && data.user) {
         setUser(data.user);
 
+        // Get token
+        const token = data.token || localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) || sessionStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+
+        // Set token in axios
+        setAuthToken(token);
+
         // Update Redux store
         dispatch(loginSuccess({
           user: data.user,
-          token: data.token || localStorage.getItem('token')
+          token: token
         }));
       }
 
@@ -121,6 +132,9 @@ export const AuthProvider = ({ children }) => {
     logoutService();
     setIsAuthenticated(false);
     setUser(null);
+
+    // Clear token in axios
+    setAuthToken(null);
 
     // Update Redux store
     dispatch(logoutAction());

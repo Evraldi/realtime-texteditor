@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../utils/axiosConfig';
+import { SUCCESS_MESSAGES } from '../../config/constants';
+import { debugAuth, fixAuthTokens } from '../../utils/debugAuth';
 import { getDocument, saveDocument, createDocument, deleteDocument, updateDocument } from '../../services/documentService';
 import { restoreVersion } from '../../services/versionService';
 import { shareDocument } from '../../services/sharingService';
@@ -173,34 +175,9 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
             ch = Math.min(ch, lines[line].length);
           }
 
-          // Update a debug element with cursor position
-          try {
-            let debugElement = document.getElementById('cursor-debug');
-
-            if (!debugElement) {
-              // Create the element if it doesn't exist
-              const el = document.createElement('div');
-              el.id = 'cursor-debug';
-              el.style.position = 'fixed';
-              el.style.bottom = '10px';
-              el.style.right = '10px';
-              el.style.background = 'rgba(0,0,0,0.7)';
-              el.style.color = 'white';
-              el.style.padding = '5px 10px';
-              el.style.borderRadius = '3px';
-              el.style.fontSize = '12px';
-              el.style.fontFamily = 'monospace';
-              el.style.zIndex = '9999';
-              document.body.appendChild(el);
-              debugElement = el;
-            }
-
-            if (debugElement) {
-              debugElement.textContent = `Line: ${line + 1}, Column: ${ch + 1}`;
-            }
-          } catch (error) {
-            console.error('Error updating debug element:', error);
-            // Silently continue without crashing
+          // Update cursor position for debugging (in console only)
+          if (process.env.NODE_ENV === 'development') {
+            console.debug(`Cursor position - Line: ${line + 1}, Column: ${ch + 1}`);
           }
         }
 
@@ -461,14 +438,10 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
         newComment.position = commentPosition;
       }
 
-      // Get auth token from localStorage
-      const token = localStorage.getItem('token');
-
-      // Call API to add comment using axios with auth header
+      // Call API to add comment using axios
       const response = await axios.post(
         `/api/comments/document/${docId}`,
-        newComment,
-        { headers: { Authorization: `Bearer ${token}` } }
+        newComment
       );
 
       // Update comments state
@@ -478,7 +451,7 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
       setCommentPosition(null);
 
       // Show success message
-      setSuccessMessage('Comment added successfully');
+      setSuccessMessage(SUCCESS_MESSAGES.COMMENT_ADDED);
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error('Error adding comment:', err);
@@ -583,13 +556,9 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
     if (!docId) return;
 
     try {
-      // Get auth token from localStorage
-      const token = localStorage.getItem('token');
-
-      // Use axios instead of fetch for consistency
+      // Use axios instance with configured baseURL and auth
       const response = await axios.get(
-        `/api/comments/document/${docId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `/api/comments/document/${docId}`
       );
       setComments(response.data || []);
     } catch (err) {
@@ -757,6 +726,17 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
   // Fetch comments when document loads
   useEffect(() => {
     if (docId) {
+      // Debug auth tokens and fix if needed
+      console.log('TextEditor mounted, debugging auth tokens...');
+      debugAuth();
+
+      // Fix auth tokens if needed
+      const token = fixAuthTokens();
+      if (token) {
+        console.log('Auth tokens fixed, using token:', token.substring(0, 10) + '...');
+      }
+
+      // Fetch comments
       fetchComments();
     }
   }, [docId, fetchComments]);

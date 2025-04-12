@@ -1,5 +1,19 @@
 import { post, get } from './apiService';
 import { STORAGE_KEYS } from '../config/constants';
+import { setAuthToken, registerTokenSetter } from '../utils/axiosConfig';
+
+// Register a token setter function to avoid circular dependencies
+registerTokenSetter((token) => {
+  if (token) {
+    // Store token in both localStorage and sessionStorage for maximum compatibility
+    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+    sessionStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+  } else {
+    // Clear token from both storage types
+    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+    sessionStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+  }
+});
 
 // Token refresh timer
 let refreshTokenTimer = null;
@@ -23,6 +37,9 @@ const storeAuthData = (data, remember = false) => {
   // Store token
   storage.setItem(STORAGE_KEYS.AUTH_TOKEN, data.token);
 
+  // Set token in axios
+  setAuthToken(data.token);
+
   // Store user data if available
   if (data.user) {
     storage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
@@ -43,6 +60,9 @@ const clearAuthData = () => {
   localStorage.removeItem(STORAGE_KEYS.USER);
   sessionStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
   sessionStorage.removeItem(STORAGE_KEYS.USER);
+
+  // Clear token in axios
+  setAuthToken(null);
 
   // Clear refresh timer
   if (refreshTokenTimer) {
@@ -136,6 +156,9 @@ export const refreshToken = async () => {
         : sessionStorage;
 
       storage.setItem(STORAGE_KEYS.AUTH_TOKEN, data.token);
+
+      // Set token in axios
+      setAuthToken(data.token);
 
       // Set up new refresh timer
       setupTokenRefresh(data.token);

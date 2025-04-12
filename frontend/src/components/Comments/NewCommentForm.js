@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useAuth } from '../../context/AuthContext';
-import '../../styles/comments.css';
+import './CommentsVariables.css';
+import './NewCommentForm.css';
 
 /**
- * Component for adding a new comment
+ * NewCommentForm - A component for adding a new comment
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {Function} props.onAddComment - Function to add a new comment
+ * @param {Object} props.initialPosition - Initial position for the comment
+ * @param {Function} props.onCancel - Function to call when canceling
+ * @returns {JSX.Element} Rendered component
  */
 const NewCommentForm = ({ onAddComment, initialPosition = null, onCancel = null }) => {
   const [text, setText] = useState('');
@@ -17,24 +25,22 @@ const NewCommentForm = ({ onAddComment, initialPosition = null, onCancel = null 
   const { user: contextUser } = useAuth();
   const user = auth?.user || contextUser || { _id: 'anonymous', username: 'Anonymous' };
 
-  // Always show expanded form when initialPosition is provided
-  useEffect(() => {
-    if (initialPosition) {
-      setIsExpanded(true);
-    }
-  }, [initialPosition]);
-
-  const handleSubmit = async (e) => {
+  /**
+   * Handle form submission
+   * @param {React.FormEvent} e - Form event
+   */
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
+    const trimmedText = text.trim();
 
-    if (!text.trim()) return;
+    if (!trimmedText) return;
 
     setIsSubmitting(true);
 
     try {
       // Create the comment object
       const newComment = {
-        text: text.trim(),
+        text: trimmedText,
         user: user._id,
         position: initialPosition,
         status: 'open'
@@ -54,7 +60,16 @@ const NewCommentForm = ({ onAddComment, initialPosition = null, onCancel = null 
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [text, user._id, initialPosition, onAddComment, onCancel]);
+
+  /**
+   * Handle cancel button click
+   */
+  const handleCancel = useCallback(() => {
+    setText('');
+    setIsExpanded(false);
+    if (onCancel) onCancel();
+  }, [onCancel]);
 
   // Always show expanded form when initialPosition is provided
   useEffect(() => {
@@ -63,14 +78,39 @@ const NewCommentForm = ({ onAddComment, initialPosition = null, onCancel = null 
     }
   }, [initialPosition]);
 
-  // Remove duplicate effect (there was a duplicate below)
+  /**
+   * Get position text for the comment
+   * @returns {JSX.Element} Position indicator element
+   */
+  const getPositionIndicator = () => {
+    if (!initialPosition) return null;
+
+    if (initialPosition.selectedText && initialPosition.selectedText.length > 0) {
+      const truncatedText = initialPosition.selectedText.substring(0, 30);
+      const ellipsis = initialPosition.selectedText.length > 30 ? '...' : '';
+
+      return (
+        <span>
+          Commenting on: "{truncatedText}{ellipsis}"
+        </span>
+      );
+    }
+
+    return (
+      <span>
+        Commenting at Line {initialPosition.line + 1}, Column {initialPosition.ch + 1}
+      </span>
+    );
+  };
 
   return (
     <div className="new-comment-container">
       {isExpanded || initialPosition ? (
         <form onSubmit={handleSubmit} className="new-comment-form">
           <h3 className="comment-form-title">Add Comment</h3>
+          <label htmlFor="new-comment-textarea" className="sr-only">Write a comment</label>
           <textarea
+            id="new-comment-textarea"
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Write a comment..."
@@ -80,17 +120,8 @@ const NewCommentForm = ({ onAddComment, initialPosition = null, onCancel = null 
           />
 
           {initialPosition && (
-            <div className="comment-position-indicator">
-              {initialPosition.selectedText && initialPosition.selectedText.length > 0 ? (
-                <span>
-                  Commenting on: "{initialPosition.selectedText.substring(0, 30)}
-                  {initialPosition.selectedText.length > 30 ? '...' : ''}"
-                </span>
-              ) : (
-                <span>
-                  Commenting at Line {initialPosition.line + 1}, Column {initialPosition.ch + 1}
-                </span>
-              )}
+            <div className="comment-position-indicator" aria-live="polite">
+              {getPositionIndicator()}
             </div>
           )}
 
@@ -98,11 +129,7 @@ const NewCommentForm = ({ onAddComment, initialPosition = null, onCancel = null 
             <button
               type="button"
               className="cancel-button"
-              onClick={() => {
-                setText('');
-                setIsExpanded(false);
-                if (onCancel) onCancel();
-              }}
+              onClick={handleCancel}
             >
               Cancel
             </button>
@@ -120,6 +147,14 @@ const NewCommentForm = ({ onAddComment, initialPosition = null, onCancel = null 
         <div
           className="comment-placeholder"
           onClick={() => setIsExpanded(true)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setIsExpanded(true);
+              e.preventDefault();
+            }
+          }}
         >
           <span>Add a comment...</span>
         </div>
@@ -148,5 +183,7 @@ NewCommentForm.propTypes = {
     })
   })
 };
+
+// Default props are now handled with JavaScript default parameters in the function signature
 
 export default NewCommentForm;

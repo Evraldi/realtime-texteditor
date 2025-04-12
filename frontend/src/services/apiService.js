@@ -4,11 +4,12 @@
  * This file contains the configuration for API requests,
  * including base URL, headers, and interceptors.
  */
-import { STORAGE_KEYS } from '../config/constants';
+import { STORAGE_KEYS, API_URL } from '../config/constants';
 import { refreshToken as refreshAuthToken } from './authService';
+import { setAuthToken } from '../utils/axiosConfig';
 
-// Get the API base URL from environment variables or use relative URL
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || '';
+// Use the API_URL from constants
+const API_BASE_URL = API_URL;
 
 // Flag to prevent multiple simultaneous token refresh attempts
 let isRefreshing = false;
@@ -33,6 +34,8 @@ export const createHeaders = (includeAuth = false) => {
 
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
+      // Also set the token in axios for future requests
+      setAuthToken(token);
     }
   }
 
@@ -88,6 +91,8 @@ const handleTokenRefresh = async (endpoint, options) => {
                      sessionStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
         if (token) {
           options.headers.Authorization = `Bearer ${token}`;
+          // Also set the token in axios for future requests
+          setAuthToken(token);
         }
       }
 
@@ -106,6 +111,8 @@ const handleTokenRefresh = async (endpoint, options) => {
                    sessionStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
       if (token) {
         options.headers.Authorization = `Bearer ${token}`;
+        // Also set the token in axios for future requests
+        setAuthToken(token);
       }
     }
 

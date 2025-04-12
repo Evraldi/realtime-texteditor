@@ -37,8 +37,9 @@ const io = setupSocket(server);
 // Set up CORS options
 const corsOptions = {
   origin: '*', // Allow all origins when serving from same host
-  methods: 'GET,POST',
+  methods: 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
 // Apply security middleware
@@ -48,6 +49,15 @@ app.use(helmet({
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
+
+// Handle OPTIONS preflight requests
+app.options('*', cors(corsOptions));
+
+// Add middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 // API routes
 app.use('/api/auth', authRoutes);

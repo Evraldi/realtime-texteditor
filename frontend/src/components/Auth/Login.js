@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import ErrorMessage from '../UI/ErrorMessage';
 import Loading from '../UI/Loading';
 import { validateEmail } from '../../utils/validation';
+import { debugAuth, fixAuthTokens } from '../../utils/debugAuth';
 import loginIllustration from '../../assets/login-illustration.svg';
 
 /**
@@ -82,7 +83,20 @@ const Login = () => {
     }
 
     try {
+      // Debug auth tokens before login
+      console.log('Login attempt, debugging auth tokens before login...');
+      debugAuth();
+
+      // Call login function from auth context
       await login(email, password, rememberMe);
+
+      // Debug auth tokens after login
+      console.log('Login successful, debugging auth tokens after login...');
+      debugAuth();
+
+      // Fix auth tokens if needed
+      fixAuthTokens();
+
       // Navigation is handled by the useEffect above
     } catch (err) {
       // Error is handled by the auth context
