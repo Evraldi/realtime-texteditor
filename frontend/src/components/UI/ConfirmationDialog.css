@@ -1,0 +1,73 @@
+.confirmation-dialog {
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 500px;
+  overflow: hidden;
+  animation: dialog-fade-in 0.3s ease-out;
+}
+
+.confirmation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.confirmation-header h3 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--color-gray-900);
+}
+
+.confirmation-body {
+  padding: var(--spacing-4);
+  font-size: var(--font-size-md);
+  color: var(--color-gray-700);
+}
+
+.confirmation-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.confirmation-dialog.danger .confirmation-header {
+  background-color: var(--color-danger-50);
+}
+
+.confirmation-dialog.warning .confirmation-header {
+  background-color: var(--color-warning-50);
+}
+
+.confirmation-dialog.info .confirmation-header {
+  background-color: var(--color-info-50);
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-gray-500);
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: var(--color-gray-700);
+}
+
+@keyframes dialog-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

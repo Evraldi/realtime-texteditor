@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Text Editor",
+  "name": "Real-Time Text Editor",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,9 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#4a6fa5",
+  "background_color": "#ffffff",
+  "orientation": "any",
+  "description": "A real-time collaborative text editor with multi-user support",
+  "categories": ["productivity", "utilities", "collaboration"]
 }

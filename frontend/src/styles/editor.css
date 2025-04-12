@@ -1,0 +1,333 @@
+/* Editor-specific styles */
+
+/* Cursor overlay */
+.cursor-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* Allow clicks to pass through to the editor */
+  z-index: var(--z-index-20);
+  overflow: hidden; /* Prevent selections from overflowing */
+}
+
+/* Remote cursor */
+.remote-cursor {
+  position: absolute;
+  width: 2px; /* Standard cursor width like in VS Code, Sublime, etc. */
+  height: 20px; /* Match line height */
+  background-color: var(--color-primary);
+  z-index: var(--z-index-20);
+  pointer-events: none; /* Make sure cursor doesn't interfere with text selection */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transform-origin: left top;
+  animation: cursor-blink 1s infinite; /* Blinking animation */
+  box-shadow: none; /* No shadow for cleaner appearance */
+  transform: translateZ(0); /* Force GPU acceleration */
+  border-radius: 0; /* Sharp edges for precise positioning */
+  will-change: transform; /* Optimize for animations */
+  backface-visibility: hidden; /* Prevent flickering in some browsers */
+  -webkit-backface-visibility: hidden;
+}
+
+/* Cursor name flag */
+.remote-cursor-flag {
+  position: absolute;
+  top: -22px;
+  left: 0; /* Align with cursor */
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  color: white;
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  opacity: 0.9;
+  pointer-events: none;
+  transform: translateX(-50%); /* Center the flag */
+  box-shadow: var(--shadow-sm);
+  z-index: var(--z-index-30);
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: opacity 0.2s ease;
+}
+
+/* Cursor animation */
+.remote-cursor {
+  animation: cursor-blink 1s infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; } /* Full blink for better visibility */
+}
+
+/* Selection highlight for other users */
+.remote-selection {
+  position: absolute;
+  /* Background color is set dynamically in the component */
+  opacity: 1; /* Full opacity - the transparency is handled in the rgba color */
+  pointer-events: none;
+  z-index: var(--z-index-10);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Ensure the selection is rendered correctly */
+  will-change: transform;
+  /* Prevent any browser-specific rendering issues */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; /* Firefox support */
+  /* Ensure the selection is visible on all backgrounds */
+  mix-blend-mode: multiply;
+  /* Fallback for browsers that don't support mix-blend-mode */
+  @supports not (mix-blend-mode: multiply) {
+    background-color: rgba(0, 100, 255, 0.3) !important;
+  }
+  /* Ensure the selection has rounded corners for better appearance */
+  border-radius: 1px;
+  /* Optimize rendering */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Position indicator */
+.position-indicator {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: var(--color-gray-200);
+  padding: 4px 8px;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-700);
+  z-index: var(--z-index-20);
+}
+
+/* User list in editor */
+.editor-users {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  z-index: var(--z-index-20);
+}
+
+.editor-user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease;
+  position: relative;
+}
+
+.editor-user-avatar:hover {
+  transform: scale(1.1);
+}
+
+.editor-user-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-success);
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.editor-user-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-gray-800);
+  color: white;
+  padding: 4px 8px;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  margin-bottom: 5px;
+  z-index: var(--z-index-30);
+}
+
+.editor-user-avatar:hover .editor-user-tooltip {
+  opacity: 1;
+}
+
+/* Text editor container with relative positioning for overlay */
+.text-editor-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+/* Quill editor customizations for better cursor positioning */
+.ql-editor {
+  font-family: var(--font-family-monospace);
+  tab-size: 4;
+  -moz-tab-size: 4;
+  letter-spacing: 0; /* Ensure no letter spacing affects positioning */
+  white-space: pre-wrap; /* Preserve whitespace but allow wrapping */
+  overflow-wrap: break-word; /* Break words to prevent horizontal scrolling */
+  -webkit-font-smoothing: antialiased; /* Better text rendering */
+  /* Better text rendering in Firefox */
+  /* -moz-osx-font-smoothing: grayscale; */
+  line-height: 1.5; /* Consistent line height for better cursor positioning */
+  caret-color: #000; /* Make the native cursor more visible */
+  font-variant-ligatures: none; /* Disable ligatures for consistent character width */
+  /* Disable ligatures in browsers that support it */
+  /* font-feature-settings: "liga" 0; */
+}
+
+/* Make sure the textarea has a monospace font for consistent character width */
+textarea.text-editor {
+  font-family: var(--font-family-monospace);
+  font-size: 16px; /* Fixed font size for consistent character width */
+  line-height: 1.5;
+  tab-size: 4;
+  letter-spacing: 0; /* Ensure no letter spacing affects positioning */
+  white-space: pre-wrap; /* Preserve whitespace but allow wrapping */
+  overflow-wrap: break-word; /* Break words to prevent horizontal scrolling */
+  -webkit-font-smoothing: antialiased; /* Better text rendering */
+  transition: border-color 0.3s ease;
+  padding: 10px; /* Add consistent padding */
+  box-sizing: border-box; /* Include padding in width/height calculations */
+  width: 100%;
+  height: 100%;
+  resize: none; /* Prevent textarea resizing */
+  border: 1px solid var(--color-gray-300);
+  outline: none; /* Remove default focus outline */
+}
+
+textarea.text-editor:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+}
+
+/* Unsaved changes indicator */
+.unsaved-indicator {
+  color: var(--color-warning);
+  font-weight: var(--font-weight-bold);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+textarea.text-editor.unsaved {
+  border-color: var(--color-warning);
+}
+
+/* Connection status indicator */
+.connection-status {
+  display: inline-flex;
+  align-items: center;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.status-indicator.online {
+  background-color: var(--color-success);
+  box-shadow: 0 0 5px var(--color-success);
+}
+
+.status-indicator.offline {
+  background-color: var(--color-warning);
+  box-shadow: 0 0 5px var(--color-warning);
+}
+
+.status-indicator.disconnected {
+  background-color: var(--color-danger);
+  box-shadow: 0 0 5px var(--color-danger);
+}
+
+/* Offline mode banner */
+.offline-banner {
+  background-color: var(--color-warning);
+  color: var(--color-gray-900);
+  padding: var(--spacing-2);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.offline-icon, .disconnected-icon, .quality-icon {
+  margin-right: var(--spacing-2);
+}
+
+/* Connection quality indicator */
+.connection-quality-indicator {
+  padding: var(--spacing-2);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-gray-100);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.quality-fair {
+  color: var(--color-warning);
+}
+
+.quality-poor {
+  color: var(--color-danger);
+}
+
+/* Mobile view optimizations */
+.mobile-view .text-editor {
+  font-size: 14px;
+}
+
+.mobile-view .editor-toolbar {
+  padding: var(--spacing-2);
+}
+
+.mobile-view .position-indicator {
+  font-size: 10px;
+}
+
+/* Document title with ellipsis for long titles */
+.document-title {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Disconnected banner */
+.disconnected-banner {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-top: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+/* Cursor blink animation - already defined above, removing duplicate */

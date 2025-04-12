@@ -1,0 +1,151 @@
+.format-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.format-group {
+  display: flex;
+  border-right: 1px solid #ddd;
+  padding-right: 5px;
+  margin-right: 5px;
+}
+
+.format-group:last-child {
+  border-right: none;
+}
+
+.format-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.format-btn:hover {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+}
+
+.format-btn:active {
+  background-color: #dee2e6;
+}
+
+.format-btn.active {
+  background-color: #e2e6ea;
+  border-color: #ced4da;
+}
+
+.format-icon {
+  font-style: normal;
+  font-weight: bold;
+}
+
+.bold-icon {
+  font-weight: bold;
+}
+
+.italic-icon {
+  font-style: italic;
+}
+
+.underline-icon {
+  text-decoration: underline;
+}
+
+.strike-icon {
+  text-decoration: line-through;
+}
+
+/* Dropdown container */
+.dropdown-container {
+  position: relative;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  min-width: 120px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* Dropdown items */
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 5px 10px;
+  clear: both;
+  font-weight: normal;
+  text-align: left;
+  white-space: nowrap;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Color picker */
+.color-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  flex-wrap: wrap;
+  width: 150px;
+  padding: 5px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.color-option {
+  width: 20px;
+  height: 20px;
+  margin: 2px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .format-toolbar {
+    overflow-x: auto;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+  }
+
+  .format-group {
+    flex-shrink: 0;
+  }
+}

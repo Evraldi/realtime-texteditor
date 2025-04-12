@@ -1,0 +1,146 @@
+/* ShareDialog component styles */
+.share-dialog {
+  max-width: 550px;
+}
+
+.share-dialog .modal-body {
+  padding: 20px;
+}
+
+.share-dialog h4 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.share-link-section,
+.share-email-section {
+  margin-bottom: 24px;
+}
+
+.share-link-input {
+  display: flex;
+}
+
+.share-link-input input {
+  flex: 1;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.share-link-input button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.share-dialog .form-group {
+  margin-bottom: 16px;
+}
+
+.share-dialog .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.share-dialog .alert {
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.share-dialog .alert-danger {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.share-dialog .alert-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+/* Shared users list */
+.shared-users-list {
+  margin-top: 20px;
+}
+
+.shared-users-list h4 {
+  margin-bottom: 10px;
+}
+
+.shared-user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.shared-user-info {
+  display: flex;
+  align-items: center;
+}
+
+.shared-user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #4a6fa5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.shared-user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.shared-user-email {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.shared-user-permission {
+  font-size: 12px;
+  color: #666;
+}
+
+.shared-user-actions button {
+  background: none;
+  border: none;
+  color: #f44336;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.shared-user-actions button:hover {
+  color: #d32f2f;
+}
+
+/* Responsive styles */
+@media (max-width: 576px) {
+  .share-dialog {
+    width: 95%;
+  }
+  
+  .share-link-input {
+    flex-direction: column;
+  }
+  
+  .share-link-input input {
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  
+  .share-link-input button {
+    border-radius: 4px;
+  }
+}
