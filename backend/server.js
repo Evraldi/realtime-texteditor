@@ -3,6 +3,8 @@ const http = require('http');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const setupSocket = require('./config/socket');
 const validateEnv = require('./config/validateEnv');
@@ -39,9 +41,13 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
-// Apply CORS middleware
+// Apply security middleware
+app.use(helmet({
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false
+}));
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 
 // API routes
 app.use('/api/auth', authRoutes);
