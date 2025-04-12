@@ -112,7 +112,16 @@ const DocumentList = () => {
    */
   const getPreviewText = (content) => {
     if (!content) return 'Empty document';
-    return content.substring(0, 100) + (content.length > 100 ? '...' : '');
+
+    // Create a temporary div to parse HTML content
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+
+    // Get text content without HTML tags
+    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+
+    // Return truncated text
+    return textContent.substring(0, 100) + (textContent.length > 100 ? '...' : '');
   };
 
   /**
@@ -479,18 +488,6 @@ const DocumentList = () => {
                 <p className="document-card-preview">
                   {getPreviewText(doc.content)}
                 </p>
-                <div className="document-card-meta">
-                  <span className="document-card-words" title="Word count">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
-                      <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    {doc.content ? doc.content.split(/\s+/).filter(Boolean).length : 0} words
-                  </span>
-                </div>
               </div>
               <div className="document-card-footer">
                 <span className="document-card-date" title={`Last modified: ${new Date(doc.updatedAt || doc.createdAt).toLocaleString()}`}>

@@ -174,8 +174,11 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
           }
 
           // Update a debug element with cursor position
-          const debugElement = document.getElementById('cursor-debug') ||
-            (() => {
+          try {
+            let debugElement = document.getElementById('cursor-debug');
+
+            if (!debugElement) {
+              // Create the element if it doesn't exist
               const el = document.createElement('div');
               el.id = 'cursor-debug';
               el.style.position = 'fixed';
@@ -189,10 +192,16 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
               el.style.fontFamily = 'monospace';
               el.style.zIndex = '9999';
               document.body.appendChild(el);
-              return el;
-            })();
+              debugElement = el;
+            }
 
-          debugElement.textContent = `Line: ${line + 1}, Column: ${ch + 1}`;
+            if (debugElement) {
+              debugElement.textContent = `Line: ${line + 1}, Column: ${ch + 1}`;
+            }
+          } catch (error) {
+            console.error('Error updating debug element:', error);
+            // Silently continue without crashing
+          }
         }
 
         // Always send cursor position with the most accurate data
@@ -229,8 +238,15 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
       setOfflineMode(!navigator.onLine);
 
       return () => {
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
+        try {
+          if (typeof window !== 'undefined') {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+          }
+        } catch (error) {
+          console.log('Cleanup error (safe to ignore):', error);
+          // Silently ignore errors during cleanup
+        }
       };
     }
   }, [pendingChanges, onError]);
@@ -587,9 +603,19 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
   useEffect(() => {
     return () => {
       // Clean up event listeners when component unmounts
-      if (typeof document !== 'undefined' && resizeMoveHandlerRef.current && resizeEndHandlerRef.current) {
-        document.removeEventListener('mousemove', resizeMoveHandlerRef.current);
-        document.removeEventListener('mouseup', resizeEndHandlerRef.current);
+      try {
+        // Check if we're in a browser environment and document is available
+        if (typeof window !== 'undefined' &&
+            typeof document !== 'undefined' &&
+            document &&
+            resizeMoveHandlerRef.current &&
+            resizeEndHandlerRef.current) {
+          document.removeEventListener('mousemove', resizeMoveHandlerRef.current);
+          document.removeEventListener('mouseup', resizeEndHandlerRef.current);
+        }
+      } catch (error) {
+        console.log('Cleanup error (safe to ignore):', error);
+        // Silently ignore errors during cleanup
       }
     };
   }, []);
@@ -869,23 +895,30 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
 
     // Cleanup function
     return () => {
-      // Unsubscribe from all events
-      unsubscribeDocUpdate();
-      unsubscribeCursorUpdate();
-      unsubscribeUserJoined();
-      unsubscribeUserLeft();
-      unsubscribeActiveUsers();
+      try {
+        // Unsubscribe from all events
+        if (unsubscribeDocUpdate) unsubscribeDocUpdate();
+        if (unsubscribeCursorUpdate) unsubscribeCursorUpdate();
+        if (unsubscribeUserJoined) unsubscribeUserJoined();
+        if (unsubscribeUserLeft) unsubscribeUserLeft();
+        if (unsubscribeActiveUsers) unsubscribeActiveUsers();
 
-      // Clear joined users set
-      joinedUsersRef.current = new Set();
+        // Clear joined users set
+        if (joinedUsersRef.current) {
+          joinedUsersRef.current = new Set();
+        }
 
-      // Notify others that user has left
-      if (isConnected && docId) {
-        emit('userLeft', {
-          docId,
-          userId: socket.id,
-          username: user?.email?.split('@')[0] || 'User'
-        });
+        // Notify others that user has left
+        if (isConnected && docId && emit && socket && socket.id) {
+          emit('userLeft', {
+            docId,
+            userId: socket.id,
+            username: user?.email?.split('@')[0] || 'User'
+          });
+        }
+      } catch (error) {
+        console.log('Socket cleanup error (safe to ignore):', error);
+        // Silently ignore errors during cleanup
       }
     };
   }, [docId, isConnected, emit, on, socket, user]);
