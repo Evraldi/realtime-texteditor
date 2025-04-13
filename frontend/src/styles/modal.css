@@ -67,32 +67,7 @@
   margin-left: 8px;
 }
 
-/* Share dialog specific styles */
-.share-dialog .share-link-section,
-.share-dialog .share-email-section {
-  margin-bottom: 24px;
-}
-
-.share-dialog h4 {
-  font-size: 16px;
-  margin-bottom: 12px;
-  color: #333;
-}
-
-.share-link-input {
-  display: flex;
-}
-
-.share-link-input input {
-  flex: 1;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.share-link-input button {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
+/* Share dialog styles moved to ShareDialog.css */
 
 /* Alert messages */
 .alert {
