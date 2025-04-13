@@ -1,0 +1,50 @@
+/* Comments Component Variables */
+:root {
+  /* Colors */
+  --comment-primary-color: #2196f3;
+  --comment-primary-dark: #0d8bf2;
+  --comment-primary-light: #bbdefb;
+  --comment-secondary-color: #f5f5f5;
+  --comment-text-color: #333;
+  --comment-text-light: #666;
+  --comment-border-color: #e0e0e0;
+  --comment-border-light: #f0f0f0;
+  --comment-bg-color: #fff;
+  --comment-bg-light: #f9f9f9;
+  --comment-danger-color: #f44336;
+  --comment-danger-dark: #d32f2f;
+  --comment-success-color: #4caf50;
+  --comment-success-dark: #388e3c;
+  --comment-avatar-color: #4a6fa5;
+  
+  /* Shadows */
+  --comment-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --comment-shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  --comment-transition: all 0.2s ease;
+  
+  /* Spacing */
+  --comment-spacing-xs: 4px;
+  --comment-spacing-sm: 8px;
+  --comment-spacing-md: 12px;
+  --comment-spacing-lg: 16px;
+  --comment-spacing-xl: 24px;
+  
+  /* Font sizes */
+  --comment-font-xs: 11px;
+  --comment-font-sm: 12px;
+  --comment-font-md: 14px;
+  --comment-font-lg: 16px;
+  --comment-font-xl: 18px;
+  
+  /* Border radius */
+  --comment-radius-sm: 4px;
+  --comment-radius-md: 6px;
+  --comment-radius-lg: 8px;
+  --comment-radius-full: 50%;
+  
+  /* Editor dimensions - for marker positioning */
+  --editor-line-height: 20px;
+  --editor-char-width: 8px;
+}

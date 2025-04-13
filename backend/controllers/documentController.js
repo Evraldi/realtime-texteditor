@@ -393,6 +393,62 @@ exports.shareDocument = async (req, res) => {
 };
 
 /**
+ * Update share permission for a user
+ */
+exports.updateSharePermission = async (req, res) => {
+  try {
+    const { id, shareId } = req.params;
+    const { permission } = req.body;
+    const userId = req.user ? req.user._id : null;
+
+    if (!userId) {
+      return res.status(403).json({ message: 'Authentication required' });
+    }
+
+    // Validate permission
+    if (!permission || !['view', 'edit'].includes(permission)) {
+      return res.status(400).json({ message: 'Invalid permission. Must be "view" or "edit"' });
+    }
+
+    // Find the document
+    const document = await Document.findById(id);
+
+    if (!document) {
+      return res.status(404).json({ message: 'Document not found' });
+    }
+
+    // Check if user is the document owner
+    if (!document.createdBy || document.createdBy.toString() !== userId.toString()) {
+      return res.status(403).json({ message: 'Not authorized to modify sharing for this document' });
+    }
+
+    // Find the share to update
+    const shareToUpdate = document.sharedWith.find(
+      share => share._id.toString() === shareId
+    );
+
+    if (!shareToUpdate) {
+      return res.status(404).json({ message: 'Share not found' });
+    }
+
+    // Update the permission
+    shareToUpdate.permission = permission;
+
+    await document.save();
+
+    // Populate fields before returning
+    await document.populate('sharedWith.user', 'username email displayName');
+
+    res.status(200).json({
+      message: `Permission updated to ${permission} successfully`,
+      document
+    });
+  } catch (error) {
+    handleError(error, 'Error updating share permission', res);
+  }
+};
+
+/**
  * Remove share access for a user
  */
 exports.removeShare = async (req, res) => {

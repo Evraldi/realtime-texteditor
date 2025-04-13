@@ -13,6 +13,7 @@ router.delete('/document/:id', authenticateToken, documentController.deleteDocum
 
 // Sharing routes
 router.post('/document/:id/share', authenticateToken, documentController.shareDocument);
+router.put('/document/:id/share/:shareId', authenticateToken, documentController.updateSharePermission);
 router.delete('/document/:id/share/:shareId', authenticateToken, documentController.removeShare);
 
 module.exports = router;

@@ -3,6 +3,8 @@ const http = require('http');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const setupSocket = require('./config/socket');
 const validateEnv = require('./config/validateEnv');
@@ -35,13 +37,27 @@ const io = setupSocket(server);
 // Set up CORS options
 const corsOptions = {
   origin: '*', // Allow all origins when serving from same host
-  methods: 'GET,POST',
+  methods: 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
-// Apply CORS middleware
+// Apply security middleware
+app.use(helmet({
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false
+}));
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
+
+// Handle OPTIONS preflight requests
+app.options('*', cors(corsOptions));
+
+// Add middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 // API routes
 app.use('/api/auth', authRoutes);

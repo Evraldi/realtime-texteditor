@@ -73,9 +73,10 @@ export const DOCUMENT_PERMISSIONS = {
 // Local storage keys
 export const STORAGE_KEYS = {
   AUTH_TOKEN: 'auth_token',
-  USER: 'user',
+  USER: 'user_data',
   THEME: 'theme',
-  RECENT_DOCUMENTS: 'recent_documents'
+  RECENT_DOCUMENTS: 'recent_documents',
+  EDITOR_PREFERENCES: 'editor_preferences'
 };
 
 // Theme options
@@ -91,7 +92,15 @@ export const ERROR_MESSAGES = {
   NETWORK: 'Network error. Please check your internet connection.',
   UNAUTHORIZED: 'You are not authorized to perform this action.',
   NOT_FOUND: 'The requested resource was not found.',
-  VALIDATION: 'Please check your input and try again.'
+  VALIDATION: 'Please check your input and try again.',
+  AUTH: {
+    INVALID_CREDENTIALS: 'Invalid email or password.',
+    ACCOUNT_LOCKED: 'Your account has been temporarily locked due to multiple failed login attempts.',
+    SESSION_EXPIRED: 'Your session has expired. Please log in again.',
+    WEAK_PASSWORD: 'Password is too weak. Please choose a stronger password.',
+    EMAIL_IN_USE: 'This email is already in use.',
+    INVALID_TOKEN: 'Invalid or expired token.'
+  }
 };
 
 // Success messages
@@ -99,5 +108,11 @@ export const SUCCESS_MESSAGES = {
   DOCUMENT_SAVED: 'Document saved successfully.',
   DOCUMENT_SHARED: 'Document shared successfully.',
   COMMENT_ADDED: 'Comment added successfully.',
-  SETTINGS_UPDATED: 'Settings updated successfully.'
+  SETTINGS_UPDATED: 'Settings updated successfully.',
+  AUTH: {
+    REGISTERED: 'Registration successful! You can now log in.',
+    PASSWORD_RESET_REQUESTED: 'If your email is registered, you will receive password reset instructions.',
+    PASSWORD_RESET: 'Your password has been reset successfully.',
+    PROFILE_UPDATED: 'Your profile has been updated successfully.'
+  }
 };

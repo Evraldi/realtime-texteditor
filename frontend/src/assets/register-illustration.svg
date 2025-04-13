@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400px" height="300px" viewBox="0 0 400 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Register Illustration</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#4A6FA5" offset="0%"></stop>
+            <stop stop-color="#2A4365" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#EBF4FF" offset="0%"></stop>
+            <stop stop-color="#C3DAFE" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Register">
+            <rect id="Background" fill="#F7FAFC" x="0" y="0" width="400" height="300" rx="8"></rect>
+            <g id="Form" transform="translate(100.000000, 50.000000)">
+                <rect id="Paper" fill="#FFFFFF" x="0" y="0" width="200" height="200" rx="8"></rect>
+                <rect id="Header" fill="url(#linearGradient-1)" x="0" y="0" width="200" height="40" rx="8"></rect>
+                <rect id="Field-1" fill="#EDF2F7" x="20" y="60" width="160" height="20" rx="4"></rect>
+                <rect id="Field-2" fill="#EDF2F7" x="20" y="100" width="160" height="20" rx="4"></rect>
+                <rect id="Field-3" fill="#EDF2F7" x="20" y="140" width="160" height="20" rx="4"></rect>
+                <rect id="Button" fill="url(#linearGradient-2)" x="60" y="180" width="80" height="30" rx="15"></rect>
+                <g id="User" transform="translate(90.000000, 20.000000)" fill="#FFFFFF">
+                    <circle id="Head" cx="10" cy="5" r="5"></circle>
+                    <path d="M10,12 C15.5228475,12 20,16.4771525 20,22 L20,22 L0,22 C0,16.4771525 4.4771525,12 10,12 Z" id="Body"></path>
+                </g>
+            </g>
+            <g id="Checkmark" transform="translate(320.000000, 100.000000)">
+                <circle id="Background" fill="url(#linearGradient-2)" cx="30" cy="30" r="30"></circle>
+                <path d="M20,30 L27.5,37.5 L45,20" id="Check" stroke="url(#linearGradient-1)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+            <g id="Pencil" transform="translate(50.000000, 150.000000)">
+                <rect id="Body" fill="url(#linearGradient-1)" transform="translate(25.000000, 25.000000) rotate(45.000000) translate(-25.000000, -25.000000) " x="5" y="15" width="40" height="20" rx="2"></rect>
+                <path d="M7.07106781,42.9289322 L15.7279221,34.2720779 L25.7279221,44.2720779 L17.0710678,52.9289322 L7.07106781,42.9289322 Z" id="Tip" fill="url(#linearGradient-2)" transform="translate(16.399495, 43.600505) rotate(45.000000) translate(-16.399495, -43.600505) "></path>
+                <path d="M42.9289322,7.07106781 L34.2720779,15.7279221 L44.2720779,25.7279221 L52.9289322,17.0710678 L42.9289322,7.07106781 Z" id="Eraser" fill="#F687B3" transform="translate(43.600505, 16.399495) rotate(45.000000) translate(-43.600505, -16.399495) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

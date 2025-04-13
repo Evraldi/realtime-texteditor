@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../utils/axiosConfig';
+import { SUCCESS_MESSAGES } from '../../config/constants';
+import { debugAuth, fixAuthTokens } from '../../utils/debugAuth';
 import { getDocument, saveDocument, createDocument, deleteDocument, updateDocument } from '../../services/documentService';
 import { restoreVersion } from '../../services/versionService';
 import { shareDocument } from '../../services/sharingService';
@@ -173,26 +175,10 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
             ch = Math.min(ch, lines[line].length);
           }
 
-          // Update a debug element with cursor position
-          const debugElement = document.getElementById('cursor-debug') ||
-            (() => {
-              const el = document.createElement('div');
-              el.id = 'cursor-debug';
-              el.style.position = 'fixed';
-              el.style.bottom = '10px';
-              el.style.right = '10px';
-              el.style.background = 'rgba(0,0,0,0.7)';
-              el.style.color = 'white';
-              el.style.padding = '5px 10px';
-              el.style.borderRadius = '3px';
-              el.style.fontSize = '12px';
-              el.style.fontFamily = 'monospace';
-              el.style.zIndex = '9999';
-              document.body.appendChild(el);
-              return el;
-            })();
-
-          debugElement.textContent = `Line: ${line + 1}, Column: ${ch + 1}`;
+          // Update cursor position for debugging (in console only)
+          if (process.env.NODE_ENV === 'development') {
+            console.debug(`Cursor position - Line: ${line + 1}, Column: ${ch + 1}`);
+          }
         }
 
         // Always send cursor position with the most accurate data
@@ -229,8 +215,15 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
       setOfflineMode(!navigator.onLine);
 
       return () => {
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
+        try {
+          if (typeof window !== 'undefined') {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+          }
+        } catch (error) {
+          console.log('Cleanup error (safe to ignore):', error);
+          // Silently ignore errors during cleanup
+        }
       };
     }
   }, [pendingChanges, onError]);
@@ -445,14 +438,10 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
         newComment.position = commentPosition;
       }
 
-      // Get auth token from localStorage
-      const token = localStorage.getItem('token');
-
-      // Call API to add comment using axios with auth header
+      // Call API to add comment using axios
       const response = await axios.post(
         `/api/comments/document/${docId}`,
-        newComment,
-        { headers: { Authorization: `Bearer ${token}` } }
+        newComment
       );
 
       // Update comments state
@@ -462,7 +451,7 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
       setCommentPosition(null);
 
       // Show success message
-      setSuccessMessage('Comment added successfully');
+      setSuccessMessage(SUCCESS_MESSAGES.COMMENT_ADDED);
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error('Error adding comment:', err);
@@ -567,13 +556,9 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
     if (!docId) return;
 
     try {
-      // Get auth token from localStorage
-      const token = localStorage.getItem('token');
-
-      // Use axios instead of fetch for consistency
+      // Use axios instance with configured baseURL and auth
       const response = await axios.get(
-        `/api/comments/document/${docId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `/api/comments/document/${docId}`
       );
       setComments(response.data || []);
     } catch (err) {
@@ -587,9 +572,19 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
   useEffect(() => {
     return () => {
       // Clean up event listeners when component unmounts
-      if (typeof document !== 'undefined' && resizeMoveHandlerRef.current && resizeEndHandlerRef.current) {
-        document.removeEventListener('mousemove', resizeMoveHandlerRef.current);
-        document.removeEventListener('mouseup', resizeEndHandlerRef.current);
+      try {
+        // Check if we're in a browser environment and document is available
+        if (typeof window !== 'undefined' &&
+            typeof document !== 'undefined' &&
+            document &&
+            resizeMoveHandlerRef.current &&
+            resizeEndHandlerRef.current) {
+          document.removeEventListener('mousemove', resizeMoveHandlerRef.current);
+          document.removeEventListener('mouseup', resizeEndHandlerRef.current);
+        }
+      } catch (error) {
+        console.log('Cleanup error (safe to ignore):', error);
+        // Silently ignore errors during cleanup
       }
     };
   }, []);
@@ -731,6 +726,17 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
   // Fetch comments when document loads
   useEffect(() => {
     if (docId) {
+      // Debug auth tokens and fix if needed
+      console.log('TextEditor mounted, debugging auth tokens...');
+      debugAuth();
+
+      // Fix auth tokens if needed
+      const token = fixAuthTokens();
+      if (token) {
+        console.log('Auth tokens fixed, using token:', token.substring(0, 10) + '...');
+      }
+
+      // Fetch comments
       fetchComments();
     }
   }, [docId, fetchComments]);
@@ -869,23 +875,30 @@ const TextEditor = ({ isMobile = false, onError = () => {}, connectionQuality = 
 
     // Cleanup function
     return () => {
-      // Unsubscribe from all events
-      unsubscribeDocUpdate();
-      unsubscribeCursorUpdate();
-      unsubscribeUserJoined();
-      unsubscribeUserLeft();
-      unsubscribeActiveUsers();
+      try {
+        // Unsubscribe from all events
+        if (unsubscribeDocUpdate) unsubscribeDocUpdate();
+        if (unsubscribeCursorUpdate) unsubscribeCursorUpdate();
+        if (unsubscribeUserJoined) unsubscribeUserJoined();
+        if (unsubscribeUserLeft) unsubscribeUserLeft();
+        if (unsubscribeActiveUsers) unsubscribeActiveUsers();
 
-      // Clear joined users set
-      joinedUsersRef.current = new Set();
+        // Clear joined users set
+        if (joinedUsersRef.current) {
+          joinedUsersRef.current = new Set();
+        }
 
-      // Notify others that user has left
-      if (isConnected && docId) {
-        emit('userLeft', {
-          docId,
-          userId: socket.id,
-          username: user?.email?.split('@')[0] || 'User'
-        });
+        // Notify others that user has left
+        if (isConnected && docId && emit && socket && socket.id) {
+          emit('userLeft', {
+            docId,
+            userId: socket.id,
+            username: user?.email?.split('@')[0] || 'User'
+          });
+        }
+      } catch (error) {
+        console.log('Socket cleanup error (safe to ignore):', error);
+        // Silently ignore errors during cleanup
       }
     };
   }, [docId, isConnected, emit, on, socket, user]);

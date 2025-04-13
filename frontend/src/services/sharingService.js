@@ -1,4 +1,4 @@
-import { get, post, del } from './apiService';
+import { get, post, put, del } from './apiService';
 
 /**
  * Share a document with another user
@@ -37,6 +37,36 @@ export const removeShare = async (documentId, shareId) => {
   } catch (error) {
     console.error('Remove share error:', error);
     throw new Error(error.message || 'Failed to remove share access');
+  }
+};
+
+/**
+ * Update permission for a shared user
+ * @param {string} documentId - Document ID
+ * @param {string} shareId - Share ID to update
+ * @param {string} permission - New permission level ('view' or 'edit')
+ * @returns {Promise<Object>} Response data
+ */
+export const updateSharePermission = async (documentId, shareId, permission) => {
+  try {
+    console.log('updateSharePermission called with:', { documentId, shareId, permission });
+
+    if (!documentId) throw new Error('Document ID is required');
+    if (!shareId) throw new Error('Share ID is required');
+    if (!['view', 'edit'].includes(permission)) {
+      throw new Error('Permission must be "view" or "edit"');
+    }
+
+    const endpoint = `/api/document/${documentId}/share/${shareId}`;
+    console.log('Making PUT request to:', endpoint);
+
+    const result = await put(endpoint, { permission });
+    console.log('Update permission API response:', result);
+
+    return result;
+  } catch (error) {
+    console.error('Update share permission error:', error);
+    throw new Error(error.message || 'Failed to update share permission');
   }
 };
 

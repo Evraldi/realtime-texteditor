@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { STORAGE_KEYS } from '../../config/constants';
 
 /**
  * Initial state for auth slice
@@ -6,7 +7,11 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isAuthenticated: false,
   user: null,
-  token: localStorage.getItem('token') || null,
+  token: localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) ||
+         sessionStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) ||
+         localStorage.getItem('token') ||
+         sessionStorage.getItem('token') ||
+         null,
   loading: false,
   error: null,
 };

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useAuth } from '../context/AuthContext';
+import { STORAGE_KEYS, API_URL } from '../config/constants';
 
 // Create socket context
 const SocketContext = createContext(null);
@@ -26,9 +27,8 @@ export const SocketProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const { isAuthenticated } = useAuth();
 
-  // Get backend URL from environment variables
-  // Use empty string for relative URL (same origin)
-  const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+  // Get backend URL from constants
+  const backendUrl = API_URL;
 
   useEffect(() => {
     // Only connect if user is authenticated
@@ -42,7 +42,13 @@ export const SocketProvider = ({ children }) => {
     }
 
     // Initialize socket connection
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) ||
+                 sessionStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) ||
+                 localStorage.getItem('token') ||
+                 sessionStorage.getItem('token');
+
+    console.log('Socket connecting with token:', token ? token.substring(0, 10) + '...' : 'none');
+
     const socketInstance = io(backendUrl, {
       auth: { token },
       reconnection: true,

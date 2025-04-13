@@ -13,8 +13,9 @@ const setupSocket = (server) => {
   const io = socketio(server, {
     cors: {
       origin: frontendURL,
-      methods: ['GET', 'POST'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
       credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization'],
     },
     // Add security and performance options
     pingTimeout: 30000,

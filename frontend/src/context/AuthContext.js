@@ -1,7 +1,15 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { login as loginService, logout as logoutService, isAuthenticated as checkAuth } from '../services/authService';
+import {
+  login as loginService,
+  logout as logoutService,
+  isAuthenticated as checkAuth,
+  getCurrentUserFromStorage,
+  refreshToken
+} from '../services/authService';
 import { loginSuccess, loginFailure, logout as logoutAction } from '../store/slices/authSlice';
+import { STORAGE_KEYS } from '../config/constants';
+import { setAuthToken } from '../utils/axiosConfig';
 
 // Create context with default values
 export const AuthContext = createContext({
@@ -34,40 +42,44 @@ export const AuthProvider = ({ children }) => {
         const isAuth = checkAuth();
         setIsAuthenticated(isAuth);
 
-        // Set a basic user object if authenticated
+        // Set user object if authenticated
         if (isAuth) {
-          // Extract email from token if possible (simplified)
-          const token = localStorage.getItem('token');
-          let email = 'user@example.com'; // Default fallback
+          // Get user data from storage
+          const userData = getCurrentUserFromStorage();
 
-          if (token) {
+          if (userData) {
+            setUser(userData);
+
+            // Get token from storage
+            const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) ||
+                         sessionStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+
+            // Set token in axios
+            setAuthToken(token);
+
+            // Update Redux store
+            dispatch(loginSuccess({
+              user: userData,
+              token: token
+            }));
+          } else {
+            // If no user data but token is valid, try to refresh token
             try {
-              // Simple parsing of JWT payload (not secure, just for display)
-              const base64Url = token.split('.')[1];
-              const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-              const payload = JSON.parse(window.atob(base64));
-              if (payload.email) {
-                email = payload.email;
+              const refreshData = await refreshToken();
+              if (refreshData && refreshData.token) {
+                // Authentication is valid, but we'll check again on the next cycle
+                console.log('Token refreshed during initial auth check');
               }
-            } catch (e) {
-              console.error('Error parsing token:', e);
+            } catch (refreshError) {
+              console.error('Token refresh failed during auth check:', refreshError);
+              setIsAuthenticated(false);
+              setError('Session expired. Please login again.');
             }
           }
-
-          const userData = { email };
-          setUser(userData);
-
-          // Update Redux store
-          dispatch(loginSuccess({
-            user: userData,
-            token: token
-          }));
         }
       } catch (err) {
         console.error('Auth check error:', err);
         setError('Session verification failed');
-        // Clear token if verification fails
-        localStorage.removeItem('token');
         setIsAuthenticated(false);
       } finally {
         setLoading(false);
@@ -90,10 +102,16 @@ export const AuthProvider = ({ children }) => {
       if (data && data.user) {
         setUser(data.user);
 
+        // Get token
+        const token = data.token || localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) || sessionStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+
+        // Set token in axios
+        setAuthToken(token);
+
         // Update Redux store
         dispatch(loginSuccess({
           user: data.user,
-          token: data.token || localStorage.getItem('token')
+          token: token
         }));
       }
 
@@ -114,6 +132,9 @@ export const AuthProvider = ({ children }) => {
     logoutService();
     setIsAuthenticated(false);
     setUser(null);
+
+    // Clear token in axios
+    setAuthToken(null);
 
     // Update Redux store
     dispatch(logoutAction());

@@ -1,0 +1,122 @@
+/* Comment Marker Styles */
+.comment-markers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 800;
+}
+
+.comment-marker {
+  position: absolute;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 810;
+  transition: transform 0.2s ease;
+}
+
+.comment-marker:hover {
+  transform: scale(1.1);
+}
+
+.comment-marker.active {
+  z-index: 820;
+}
+
+.marker-icon {
+  width: 20px;
+  height: 20px;
+  background-color: var(--comment-primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  position: relative;
+}
+
+.comment-marker:hover .marker-icon {
+  transform: scale(1.1);
+}
+
+.comment-marker.active .marker-icon {
+  background-color: var(--comment-primary-dark);
+  transform: scale(1.1);
+}
+
+/* Pulse animation for active markers */
+.comment-marker.active .marker-icon::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--comment-primary-color);
+  animation: pulse 1.5s infinite;
+  opacity: 0;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Tooltip for markers */
+.marker-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  margin-bottom: 8px;
+}
+
+.marker-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+.comment-marker:hover .marker-tooltip {
+  opacity: 1;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .marker-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+}

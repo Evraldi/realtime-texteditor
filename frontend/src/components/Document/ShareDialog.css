@@ -1,52 +1,238 @@
 /* ShareDialog component styles */
-.share-dialog {
-  max-width: 550px;
+/* Modal overlay for ShareDialog */
+.share-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
 }
 
+/* Main dialog container */
+.share-dialog {
+  width: 650px;
+  max-width: 90%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: slideIn 0.3s ease;
+}
+
+/* Dialog header */
+.share-dialog .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #f8f9fa;
+}
+
+.share-dialog .modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.share-dialog .close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.share-dialog .close-button:hover {
+  color: #333;
+}
+
+/* Dialog body */
 .share-dialog .modal-body {
-  padding: 20px;
+  padding: 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .share-dialog h4 {
   font-size: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   color: #333;
+  font-weight: 600;
 }
 
 .share-link-section,
 .share-email-section {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eaeaea;
 }
 
 .share-link-input {
   display: flex;
+  align-items: center;
 }
 
 .share-link-input input {
   flex: 1;
+  border: 1px solid #ddd;
+  border-right: none;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
+  padding: 10px 12px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  color: #555;
 }
 
 .share-link-input button {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+  padding: 10px 16px;
+  font-weight: 500;
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.share-link-input button:hover {
+  background-color: #e0e0e0;
 }
 
 .share-dialog .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .share-dialog .form-group label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: 500;
+  color: #444;
+  font-size: 14px;
 }
 
-.share-dialog .alert {
-  padding: 10px 15px;
-  margin-bottom: 15px;
+.share-dialog .permission-help-text {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.share-link-info {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #666;
+}
+
+.share-dialog .form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+  background-color: #fff;
+  color: #333;
+}
+
+.share-dialog .form-control:focus {
+  border-color: #4a6fa5;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+}
+
+/* Dropdown styling */
+.share-dialog select.form-control {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  background-size: 16px !important;
+  padding-right: 30px !important;
+  cursor: pointer !important;
+  background-color: #fff !important;
+  color: #333 !important;
+}
+
+/* Override select-dark.css styles */
+.share-dialog select.form-control option {
+  background-color: #fff !important;
+  color: #333 !important;
+  padding: 8px !important;
+}
+
+.share-dialog select.form-control option:checked {
+  background-color: #4a6fa5 !important;
+  color: white !important;
+  box-shadow: 0 0 10px 100px #4a6fa5 inset !important;
+}
+
+.share-dialog .btn {
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.share-dialog .btn-primary {
+  background-color: #4a6fa5;
+  color: white;
+  border: none;
+}
+
+.share-dialog .btn-primary:hover {
+  background-color: #3d5d8a;
+}
+
+.share-dialog .btn-primary:disabled {
+  background-color: #a0b4cc;
+  cursor: not-allowed;
+}
+
+.share-dialog .btn-outline-primary {
+  background-color: transparent;
+  color: #4a6fa5;
+  border: 1px solid #4a6fa5;
+}
+
+.share-dialog .btn-outline-primary:hover {
+  background-color: #f0f4f9;
+}
+
+/* Alert messages */
+.share-dialog .alert {
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  animation: fadeIn 0.3s ease;
 }
 
 .share-dialog .alert-danger {
@@ -63,54 +249,380 @@
 
 /* Shared users list */
 .shared-users-list {
-  margin-top: 20px;
+  margin-top: 8px;
 }
 
 .shared-users-list h4 {
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.owner-info {
+  font-size: 13px;
+  color: #666;
+  font-weight: normal;
+}
+
+.user-badge {
+  display: inline-block !important;
+  background-color: #f0f4f9 !important;
+  color: #4a6fa5 !important;
+  font-size: 11px !important;
+  padding: 2px 6px !important;
+  border-radius: 10px !important;
+  margin-left: 6px !important;
+  font-weight: 500 !important;
 }
 
 .shared-user-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  margin-bottom: 8px;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 12px 16px !important;
+  background-color: #f8f9fa !important;
+  border-radius: 6px !important;
+  margin-bottom: 10px !important;
+  transition: background-color 0.2s ease !important;
+  border: 1px solid #eaeaea !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
+.shared-user-item:hover {
+  background-color: #f0f4f9 !important;
+}
+
+/* Removed duplicate keyframes */
+
 .shared-user-info {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 !important;
 }
 
 .shared-user-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #4a6fa5;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-right: 10px;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background-color: #4a6fa5 !important;
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: bold !important;
+  margin-right: 12px !important;
+  font-size: 16px !important;
 }
 
 .shared-user-details {
-  display: flex;
-  flex-direction: column;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
 }
 
 .shared-user-email {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+  margin-bottom: 2px !important;
 }
 
 .shared-user-permission {
+  font-size: 13px !important;
+  color: #666 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.permission-label {
+  margin-right: 4px !important;
+}
+
+.permission-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 4px 10px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  margin-left: 6px !important;
+  position: relative !important;
+  z-index: 20 !important;
+}
+
+.permission-badge.view {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+}
+
+.permission-badge.edit {
+  background-color: #e8f5e9 !important;
+  color: #2e7d32 !important;
+}
+
+.permission-badge-clickable {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  padding-right: 30px;
+  transition: all 0.2s ease;
+  user-select: none;
+  margin-left: 6px;
+  z-index: 50 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  pointer-events: auto !important;
+}
+
+.permission-badge-clickable.updating {
+  opacity: 0.8;
+  cursor: wait;
+  pointer-events: none !important;
+}
+
+.badge-spinner {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: currentColor;
+  animation: spin 1s linear infinite;
+}
+
+.permission-badge-clickable:hover {
+  filter: brightness(0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.permission-badge-clickable:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.permission-badge-clickable.view {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.permission-badge-clickable.edit {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.badge-text {
+  display: inline-block;
+  pointer-events: none;
+}
+
+.badge-arrow {
+  position: absolute;
+  right: 10px;
+  font-size: 8px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.permission-badge-clickable:hover .badge-arrow {
+  opacity: 1;
+}
+
+.permission-badge-clickable.updating {
+  opacity: 0.8;
+  cursor: wait;
+  pointer-events: none;
+}
+
+/* Permission dropdown styles */
+.permission-dropdown-container {
+  position: relative;
+  display: inline-block;
+  z-index: 900;
+}
+
+.permission-dropdown {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  z-index: 1000;
+  display: none;
+  min-width: 140px;
+  margin-bottom: 5px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 13px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item.active {
+  background-color: #f0f4f9;
+  font-weight: 500;
+  position: relative;
+}
+
+.dropdown-item.active::before {
+  content: '✓';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 12px;
-  color: #666;
+  opacity: 0.7;
+}
+
+.dropdown-item.active.view {
+  color: #1976d2;
+}
+
+.dropdown-item.active.edit {
+  color: #2e7d32;
+}
+
+
+
+/* Permission toggle button */
+.permission-toggle {
+  cursor: pointer !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+  position: relative !important;
+  padding-right: 24px !important; /* Space for the toggle icon */
+  z-index: 20 !important;
+  background-color: transparent !important;
+  font-family: inherit !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  pointer-events: auto !important;
+  outline: none !important;
+  text-decoration: none !important;
+}
+
+.permission-toggle:hover {
+  filter: brightness(0.95) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+  text-decoration: underline !important;
+}
+
+.permission-toggle:active {
+  transform: translateY(1px) !important;
+}
+
+.permission-toggle:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
+/* Toggle icon */
+.toggle-icon {
+  position: absolute !important;
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 10px !important;
+  height: 10px !important;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M8 3 4 7l4 4'/%3e%3cpath d='M4 7h16'/%3e%3cpath d='m16 21 4-4-4-4'/%3e%3cpath d='M20 17H4'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  opacity: 0.7 !important;
+}
+
+.permission-toggle:hover .toggle-icon {
+  opacity: 1 !important;
+}
+
+/* Badge spinner */
+.badge-spinner {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: currentColor;
+  animation: spin 1s linear infinite;
+  pointer-events: none;
+}
+
+/* Remove access button */
+.remove-access-btn {
+  background: none !important;
+  border: none !important;
+  color: #f44336 !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+}
+
+.remove-access-btn:hover {
+  background-color: #ffebee !important;
+  color: #d32f2f !important;
+}
+
+.shared-user-actions {
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Highlight effect when permission is updated */
+@keyframes highlightUpdate {
+  0% { background-color: rgba(74, 111, 165, 0.2); }
+  50% { background-color: rgba(74, 111, 165, 0.1); }
+  100% { background-color: transparent; }
+}
+
+.shared-user-item.highlight-update {
+  animation: highlightUpdate 2s ease !important;
+}
+
+/* Removed dark theme highlight */
+
+/* Animation for spinner */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .shared-user-actions button {
@@ -118,29 +630,85 @@
   border: none;
   color: #f44336;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .shared-user-actions button:hover {
+  background-color: #ffebee;
   color: #d32f2f;
 }
 
+.no-users-message {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px dashed #ddd;
+}
+
+/* Alert messages */
+.share-dialog .alert {
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  animation: fadeIn 0.3s ease;
+}
+
+.share-dialog .alert-danger {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.share-dialog .alert-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+/* Removed dark mode styles */
+
 /* Responsive styles */
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   .share-dialog {
     width: 95%;
+    max-width: 95%;
   }
-  
+}
+
+@media (max-width: 576px) {
   .share-link-input {
     flex-direction: column;
   }
-  
+
   .share-link-input input {
     border-radius: 4px;
     margin-bottom: 8px;
+    border-right: 1px solid #ddd;
   }
-  
+
   .share-link-input button {
     border-radius: 4px;
+    width: 100%;
+  }
+
+  .shared-user-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .shared-user-actions {
+    margin-top: 10px;
+    align-self: flex-end;
   }
 }
